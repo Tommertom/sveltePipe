@@ -27,4 +27,4 @@
 	}, 3000);
 </script>
 
-<h1>The count is {$stuff}</h1>
+<h1>The count is {$stuff} or {$w}</h1>
