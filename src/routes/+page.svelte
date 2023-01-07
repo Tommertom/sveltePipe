@@ -1,20 +1,21 @@
 <script lang="ts">
 	import { writable, type Writable, type Readable, type Unsubscriber } from 'svelte/store';
 
-	import { Observable } from 'rxjs';
+	import { Observable, from } from 'rxjs';
 
-	function sveltePipe<T>(w: Writable<T> | Readable<T>): Observable<T> {
+	function sveltePipe<T>(svelteStore: Writable<T> | Readable<T>): Observable<T> {
 		let unsub: Unsubscriber;
 		const obs = new Observable<T>((subscriber) => {
-			unsub = w.subscribe((val) => {
+			unsub = svelteStore.subscribe((val) => {
+				console.log('Next on value');
 				subscriber.next(val);
 			});
-		});
 
-		// how to unsubscribe the inner subscription?
-		const unsubscribe = (x: any) => {
-			unsub();
-		};
+			return () => {
+				console.log('Unsubscribing the svelte store');
+				unsub();
+			};
+		});
 
 		return obs;
 	}
@@ -28,3 +29,4 @@
 </script>
 
 <h1>The count is {$stuff} or {$w}</h1>
+<a href="/other">Go to other page so we can see unsubscribe run</a>
